@@ -92,6 +92,7 @@ function parseOctree(layer, hierarchyStepSize, root) {
                         baseurl: url,
                         bbox: bounds,
                         layer,
+                        parent: snode,
                     };
                     snode.children.push(item);
                     stack.push(item);
@@ -173,6 +174,22 @@ export default {
         layer.preUpdate = PointCloudProcessing.preUpdate;
         layer.update = PointCloudProcessing.update;
         layer.postUpdate = PointCloudProcessing.postUpdate;
+
+        layer.metadataToElements = (meta) => {
+            if (meta.obj) {
+                const p = meta.parent;
+                if (p && p.obj) {
+                    return {
+                        element: meta.obj,
+                        parent: p.obj,
+                    };
+                } else {
+                    return {
+                        element: meta.obj,
+                    };
+                }
+            }
+        };
 
         // this probably needs to be moved to somewhere else
         layer.pickObjectsAt = (view, mouse, radius) => Picking.pickPointsAt(view, mouse, radius, layer);
