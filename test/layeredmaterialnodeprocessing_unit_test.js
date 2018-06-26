@@ -30,6 +30,7 @@ describe('updateLayeredMaterialNodeImagery', function () {
     const layer = {
         id: 'foo',
         protocol: 'dummy',
+        extent: new Extent('EPSG:4326', 0, 0, 0, 0),
     };
 
     beforeEach('reset state', function () {
@@ -49,7 +50,7 @@ describe('updateLayeredMaterialNodeImagery', function () {
 
 
     it('hidden tile should not execute commands', () => {
-        const tile = new TileMesh(geom, { extent: new Extent('EPSG:4326', 0, 0, 0, 0) });
+        const tile = new TileMesh(layer, geom, { extent: new Extent('EPSG:4326', 0, 0, 0, 0) });
         tile.material.visible = false;
         tile.material.indexOfColorLayer = () => 0;
         tile.parent = { };
@@ -58,7 +59,7 @@ describe('updateLayeredMaterialNodeImagery', function () {
     });
 
     it('tile with best texture should not execute commands', () => {
-        const tile = new TileMesh(geom, { extent: new Extent('EPSG:4326', 0, 0, 0, 0) });
+        const tile = new TileMesh(layer, geom, { extent: new Extent('EPSG:4326', 0, 0, 0, 0) });
         tile.material.visible = true;
         tile.material.indexOfColorLayer = () => 0;
         tile.parent = { };
@@ -69,7 +70,7 @@ describe('updateLayeredMaterialNodeImagery', function () {
     });
 
     it('tile with downscaled texture should execute 1 command', () => {
-        const tile = new TileMesh(geom, {
+        const tile = new TileMesh(layer, geom, {
             extent: new Extent('EPSG:4326', 0, 0, 0, 0),
             level: 2,
         });
@@ -89,7 +90,7 @@ describe('updateLayeredMaterialNodeImagery', function () {
     });
 
     it('tile should not request texture with level > layer.zoom.max', () => {
-        const tile = new TileMesh(geom, {
+        const tile = new TileMesh(layer, geom, {
             extent: new Extent('EPSG:4326', 0, 0, 0, 0),
             level: 15,
         });
