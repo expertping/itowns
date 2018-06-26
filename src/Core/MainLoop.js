@@ -72,7 +72,7 @@ function updateElements(context, geometryLayer, elements) {
 
                 if (sub) {
                     if (__DEBUG__) {
-                        if (!(sub.isObject && sub.material)) {
+                        if (!(sub.element.isObject3D && sub.element.material)) {
                             throw new Error(`
                                 Invalid object for attached layer to update.
                                 Must be a THREE.Object and have a THREE.Material`);
