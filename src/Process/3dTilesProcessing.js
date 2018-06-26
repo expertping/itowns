@@ -224,7 +224,7 @@ const cameraLocalPosition = new THREE.Vector3();
 const worldPosition = new THREE.Vector3();
 const boundingVolumeBox = new THREE.Box3();
 const boundingVolumeSphere = new THREE.Sphere();
-function computeNodeSSE(camera, node) {
+export function computeNodeSSE(camera, node) {
     node.distance = 0;
     if (node.boundingVolume.region) {
         worldPosition.setFromMatrixPosition(node.boundingVolume.region.matrixWorld);
