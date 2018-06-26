@@ -175,7 +175,8 @@ export default {
         layer.update = PointCloudProcessing.update;
         layer.postUpdate = PointCloudProcessing.postUpdate;
 
-        layer.metadataToElements = (meta) => {
+        // override the default method, since updated objects are metadata in this case
+        layer.getObjectToUpdateForAttachedLayers = (meta) => {
             if (meta.obj) {
                 const p = meta.parent;
                 if (p && p.obj) {

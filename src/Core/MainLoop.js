@@ -68,17 +68,16 @@ function updateElements(context, geometryLayer, elements) {
         // update attached layers
         for (const attachedLayer of geometryLayer._attachedLayers) {
             if (attachedLayer.ready) {
-                // Attached layers expect to receive the visual representation
-                // of a layer (= THREE object).
-                // 'element' might be this (eg: in tile layers) but it can also
-                // only be some metadata (eg: pointcloud or 3dtiles).
-                // So here we allow a layer to specify what element it wants to
-                // transmit to its attached layer.
-                const sub =
-                    geometryLayer.metadataToElements ?
-                        geometryLayer.metadataToElements(element) :
-                        { element, parent: element.parent };
+                const sub = geometryLayer.getObjectToUpdateForAttachedLayers(element);
+
                 if (sub) {
+                    if (__DEBUG__) {
+                        if (!(sub.isObject && sub.material)) {
+                            throw new Error(`
+                                Invalid object for attached layer to update.
+                                Must be a THREE.Object and have a THREE.Material`);
+                        }
+                    }
                     attachedLayer.update(context, attachedLayer, sub.element, sub.parent);
                 }
             }

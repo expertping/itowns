@@ -62,7 +62,8 @@ function $3dTilesIndex(tileset, baseURL) {
 function preprocessDataLayer(layer, view, scheduler) {
     layer.sseThreshold = layer.sseThreshold || 16;
     layer.cleanupDelay = layer.cleanupDelay || 1000;
-    layer.metadataToElements = (meta) => {
+    // override the default method, since updated objects are metadata in this case
+    layer.getObjectToUpdateForAttachedLayers = (meta) => {
         if (meta.content) {
             const p = meta.parent;
             if (p && p.content) {
