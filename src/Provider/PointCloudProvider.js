@@ -250,30 +250,31 @@ export default {
 
     executeCommand(command) {
         const layer = command.layer;
-        const node = command.requester;
+        const metadata = command.requester;
 
         // Query HRC if we don't have children metadata yet.
-        if (node.childrenBitField && node.children.length === 0) {
-            parseOctree(layer, layer.metadata.hierarchyStepSize, node).then(() => command.view.notifyChange(layer, false));
+        if (metadata.childrenBitField && metadata.children.length === 0) {
+            parseOctree(layer, layer.metadata.hierarchyStepSize, metadata).then(() => command.view.notifyChange(layer, false));
         }
 
         // `isLeaf` is for lopocs and allows the pointcloud server to consider that the current
         // node is the last one, even if we could subdivide even further.
         // It's necessary because lopocs doens't know about the hierarchy (it generates it on the fly
         // when we request .hrc files)
-        const url = `${node.baseurl}/r${node.name}.${layer.extension}?isleaf=${command.isLeaf ? 1 : 0}`;
+        const url = `${metadata.baseurl}/r${metadata.name}.${layer.extension}?isleaf=${command.isLeaf ? 1 : 0}`;
 
         return Fetcher.arrayBuffer(url, layer.fetchOptions).then(layer.parse).then((geometry) => {
             const points = new THREE.Points(geometry, layer.material.clone());
             addPickingAttribute(points);
             points.frustumCulled = false;
             points.matrixAutoUpdate = false;
-            points.position.copy(node.bbox.min);
+            points.position.copy(metadata.bbox.min);
             points.scale.set(layer.metadata.scale, layer.metadata.scale, layer.metadata.scale);
             points.updateMatrix();
             points.tightbbox = geometry.boundingBox.applyMatrix4(points.matrix);
             points.layers.set(layer.threejsLayer);
             points.layer = layer;
+            points.userData.metadata = metadata;
             return points;
         });
     },

@@ -65,15 +65,21 @@ function preprocessDataLayer(layer, view, scheduler) {
     // override the default method, since updated objects are metadata in this case
     layer.getObjectToUpdateForAttachedLayers = (meta) => {
         if (meta.content) {
+            const result = [];
+            meta.content.traverse((obj) => {
+                if (obj.isObject3D && obj.material && obj.userData.layer == layer) {
+                    result.push(obj);
+                }
+            });
             const p = meta.parent;
             if (p && p.content) {
                 return {
-                    element: meta.content,
+                    elements: result,
                     parent: p.content,
                 };
             } else {
                 return {
-                    element: meta.content,
+                    elements: result,
                 };
             }
         }
@@ -182,6 +188,8 @@ function executeCommand(command) {
 
     const setLayer = (obj) => {
         obj.layers.set(layer.threejsLayer);
+        obj.userData.metadata = metadata;
+        obj.userData.layer = layer;
     };
     if (path) {
         // Check if we have relative or absolute url (with tileset's lopocs for example)

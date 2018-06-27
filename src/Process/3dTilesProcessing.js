@@ -306,7 +306,7 @@ export function process3dTilesNode(cullingTest, subdivisionTest) {
             // toggle wireframe
             if (node.content && node.content.visible) {
                 node.content.traverse((o) => {
-                    if (o.material) {
+                    if (o.userData.layer == layer && o.material) {
                         o.material.wireframe = layer.wireframe;
                     }
                 });
