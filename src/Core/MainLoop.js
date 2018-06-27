@@ -65,19 +65,19 @@ function updateElements(context, geometryLayer, elements) {
         // and then update Debug.js:addGeometryLayerDebugFeatures
         const newElementsToUpdate = geometryLayer.update(context, geometryLayer, element);
 
-        // update attached layers
-        for (const attachedLayer of geometryLayer._attachedLayers) {
-            if (attachedLayer.ready) {
-                const sub = geometryLayer.getObjectToUpdateForAttachedLayers(element);
+        const sub = geometryLayer.getObjectToUpdateForAttachedLayers(element);
 
-                if (sub) {
-                    if (__DEBUG__) {
-                        if (!(sub.element.isObject3D)) {
-                            throw new Error(`
-                                Invalid object for attached layer to update.
-                                Must be a THREE.Object and have a THREE.Material`);
-                        }
-                    }
+        if (sub) {
+            if (__DEBUG__) {
+                if (!(sub.element.isObject3D)) {
+                    throw new Error(`
+                        Invalid object for attached layer to update.
+                        Must be a THREE.Object and have a THREE.Material`);
+                }
+            }
+            // update attached layers
+            for (const attachedLayer of geometryLayer._attachedLayers) {
+                if (attachedLayer.ready) {
                     attachedLayer.update(context, attachedLayer, sub.element, sub.parent);
                 }
             }
