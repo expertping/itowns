@@ -10,7 +10,7 @@ export default {
         // Prevent subdivision if node is covered by at least one elevation layer
         // and if node doesn't have a elevation texture yet.
         for (const e of context.elevationLayers) {
-            if (!e.frozen && e.ready && e.tileInsideLimit(node, e) && !node.isElevationLayerLoaded()) {
+            if (!e.frozen && e.ready && e.tileInsideLimit(node, e) && !node.material.isElevationLayerLoaded()) {
                 // no stop subdivision in the case of a loading error
                 if (node.layerUpdateState[e.id] && node.layerUpdateState[e.id].inError()) {
                     continue;

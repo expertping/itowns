@@ -380,28 +380,22 @@ LayeredMaterial.prototype.setColorLayerParameters = function setColorLayerParame
 };
 
 LayeredMaterial.prototype.pushLayer = function pushLayer(layer, extents) {
-    const param = {
-        tileMT: layer.options.tileMatrixSet || extents[0].crs(),
-        texturesCount: extents.length,
-        visible: layer.visible,
-        opacity: layer.opacity,
-        fx: layer.fx,
-        idLayer: layer.id,
-    };
     const newIndex = this.getColorLayersCount();
-    const offset = newIndex === 0 ? 0 : this.getTextureOffsetByLayerIndex(newIndex - 1) + this.getTextureCountByLayerIndex(newIndex - 1);
+    const offset = newIndex === 0 ?
+        0 :
+        this.getTextureOffsetByLayerIndex(newIndex - 1) + this.getTextureCountByLayerIndex(newIndex - 1);
 
     this.uniforms.paramLayers.value[newIndex] = new THREE.Vector4();
 
     this.setTextureOffsetByLayerIndex(newIndex, offset);
     // If there's only one texture: assume it covers the whole tile,
     // otherwise declare the number of textures
-    this.setLayerUV(newIndex, (param.texturesCount == 1) ? 0 : param.texturesCount);
-    this.setLayerFx(newIndex, param.fx);
-    this.setLayerOpacity(newIndex, param.opacity);
-    this.setLayerVisibility(newIndex, param.visible);
-    this.setLayerTexturesCount(newIndex, param.texturesCount);
-    this.colorLayersId.push(param.idLayer);
+    this.setLayerUV(newIndex, (extents.length == 1) ? 0 : extents.length);
+    this.setLayerFx(newIndex, layer.fx);
+    this.setLayerOpacity(newIndex, layer.opacity);
+    this.setLayerVisibility(newIndex, layer.visible);
+    this.setLayerTexturesCount(newIndex, extents.length);
+    this.colorLayersId.push(layer.id);
 
     this.uniforms.colorLayersCount.value = this.getColorLayersCount();
 };
@@ -515,5 +509,8 @@ LayeredMaterial.prototype.setSelected = function setSelected(selected) {
     this.uniforms.selected.value = selected;
 };
 
+LayeredMaterial.prototype.isElevationLayerLoaded = function isElevationLayerLoaded() {
+    return this.loadedTexturesCount[l_ELEVATION] > 0;
+};
 
 export default LayeredMaterial;

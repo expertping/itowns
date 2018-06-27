@@ -6,7 +6,6 @@
 
 import * as THREE from 'three';
 import LayeredMaterial from '../Renderer/LayeredMaterial';
-import { l_ELEVATION } from '../Renderer/LayeredMaterialConstants';
 import RendererConstant from '../Renderer/RendererConstant';
 import OGCWebServiceHelper, { SIZE_TEXTURE_TILE } from '../Provider/OGCWebServiceHelper';
 import { is4326 } from './Geographic/Coordinates';
@@ -165,10 +164,6 @@ TileMesh.prototype.isColorLayerLoaded = function isColorLayerLoaded(layer) {
         return textures[0].coords.zoom > -1;
     }
     return false;
-};
-
-TileMesh.prototype.isElevationLayerLoaded = function isElevationLayerLoaded() {
-    return this.material.loadedTexturesCount[l_ELEVATION] > 0;
 };
 
 TileMesh.prototype.isColorLayerDownscaled = function isColorLayerDownscaled(layer) {

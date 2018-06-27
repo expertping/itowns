@@ -169,7 +169,7 @@ function tileAt(pt, tile) {
                 return t;
             }
         }
-        if (tile.material.textures[l_ELEVATION][0].coords.zoom > -1) {
+        if (tile.material.isElevationLayerLoaded()) {
             return tile;
         }
         return undefined;
