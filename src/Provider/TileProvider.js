@@ -6,6 +6,7 @@
 import * as THREE from 'three';
 import TileGeometry from '../Core/TileGeometry';
 import TileMesh from '../Core/TileMesh';
+import LayeredMaterial from '../Renderer/LayeredMaterial';
 import CancelledCommandException from '../Core/Scheduler/CancelledCommandException';
 import Cache from '../Core/Scheduler/Cache';
 import { requestNewTile } from '../Process/TiledNodeProcessing';
@@ -73,14 +74,9 @@ function executeCommand(command) {
     }
 
     // build tile
-    const params = {
-        extent,
-        level,
-        materialOptions: layer.materialOptions,
-    };
-
     geometry._count++;
-    const tile = new TileMesh(layer, geometry, params);
+    const material = new LayeredMaterial(layer.materialOptions);
+    const tile = new TileMesh(layer, geometry, material, extent, level);
     tile.layers.set(command.threejsLayer);
 
     if (parent && parent instanceof TileMesh) {

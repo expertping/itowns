@@ -214,7 +214,7 @@ export function updateLayeredMaterialNodeImagery(context, layer, node) {
             node.layerUpdateState[layer.id].noMoreUpdatePossible();
             return;
         }
-    } else if (!node.isColorLayerDownscaled(layer)) {
+    } else if (!material.isColorLayerDownscaled(layer, node.getZoomForLayer(layer))) {
         // default decision method
         node.layerUpdateState[layer.id].noMoreUpdatePossible();
         return;

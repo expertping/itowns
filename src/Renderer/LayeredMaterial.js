@@ -461,9 +461,9 @@ LayeredMaterial.prototype.getLoadedTexturesCount = function getLoadedTexturesCou
     return this.loadedTexturesCount[l_ELEVATION] + this.loadedTexturesCount[l_COLOR];
 };
 
-LayeredMaterial.prototype.isColorLayerDownscaled = function isColorLayerDownscaled(layerId, zoom) {
-    return this.textures[l_COLOR][this.getLayerTextureOffset(layerId)] &&
-        this.textures[l_COLOR][this.getLayerTextureOffset(layerId)].coords.zoom < zoom;
+LayeredMaterial.prototype.isColorLayerDownscaled = function isColorLayerDownscaled(layer, zoom) {
+    return this.textures[l_COLOR][this.getLayerTextureOffset(layer.id)] &&
+        this.textures[l_COLOR][this.getLayerTextureOffset(layer.id)].coords.zoom < zoom;
 };
 
 LayeredMaterial.prototype.getColorLayerLevelById = function getColorLayerLevelById(colorLayerId) {
@@ -475,6 +475,14 @@ LayeredMaterial.prototype.getColorLayerLevelById = function getColorLayerLevelBy
     const texture = this.textures[l_COLOR][slot];
 
     return texture ? texture.coords.zoom : EMPTY_TEXTURE_ZOOM;
+};
+
+LayeredMaterial.prototype.isColorLayerLoaded = function isColorLayerLoaded(layer) {
+    const textures = this.getLayerTextures(layer);
+    if (textures.length) {
+        return textures[0].coords.zoom > EMPTY_TEXTURE_ZOOM;
+    }
+    return false;
 };
 
 LayeredMaterial.prototype.getElevationLayerLevel = function getElevationLayerLevel() {

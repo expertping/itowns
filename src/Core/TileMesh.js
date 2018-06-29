@@ -5,26 +5,21 @@
  */
 
 import * as THREE from 'three';
-import LayeredMaterial from '../Renderer/LayeredMaterial';
 import RendererConstant from '../Renderer/RendererConstant';
 import OGCWebServiceHelper, { SIZE_TEXTURE_TILE } from '../Provider/OGCWebServiceHelper';
 import { is4326 } from './Geographic/Coordinates';
 
-function TileMesh(layer, geometry, params) {
+function TileMesh(layer, geometry, material, extent, level) {
     // Constructor
-    THREE.Mesh.call(this);
+    THREE.Mesh.call(this, geometry, material);
 
     this.layer = layer;
 
     this.matrixAutoUpdate = false;
     this.rotationAutoUpdate = false;
 
-    if (!params.extent) {
-        throw new Error('params.extent is mandatory to build a TileMesh');
-    }
-
-    this.level = params.level;
-    this.extent = params.extent;
+    this.level = level;
+    this.extent = extent;
 
     this.geometry = geometry;
 
@@ -32,8 +27,6 @@ function TileMesh(layer, geometry, params) {
 
     this.boundingSphere = new THREE.Sphere();
     this.OBB().box3D.getBoundingSphere(this.boundingSphere);
-
-    this.material = new LayeredMaterial(params.materialOptions);
 
     this.frustumCulled = false;
 
@@ -157,20 +150,6 @@ TileMesh.prototype.setTexturesLayer = function setTexturesLayer(textures, layerT
     }
 };
 
-TileMesh.prototype.isColorLayerLoaded = function isColorLayerLoaded(layer) {
-    const mat = this.material;
-    const textures = mat.getLayerTextures(layer);
-    if (textures.length) {
-        return textures[0].coords.zoom > -1;
-    }
-    return false;
-};
-
-TileMesh.prototype.isColorLayerDownscaled = function isColorLayerDownscaled(layer) {
-    const mat = this.material;
-    return mat.isColorLayerDownscaled(layer.id, this.getZoomForLayer(layer));
-};
-
 TileMesh.prototype.OBB = function OBB() {
     return this.obb;
 };
@@ -215,6 +194,9 @@ TileMesh.prototype.getCoordsForLayer = function getCoordsForLayer(layer) {
             return OGCWebServiceHelper.computeTMSCoordinates(this, layer.extent, layer.origin);
         }
     } else if (layer.extent.crs() == this.extent.crs()) {
+        // Currently extent.as() always clone the extent, even if the output
+        // crs is the same.
+        // So we avoid using it if both crs are the same.
         return [this.extent];
     } else {
         return [this.extent.as(layer.extent.crs())];
