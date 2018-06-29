@@ -54,7 +54,7 @@ export default function create3dTilesDebugUI(datDebugTool, view, _3dTileslayer) 
                 }
 
                 if (helper) {
-                    helper.userData.layer = layer;
+                    helper.layer = layer;
                     // add the ability to hide all the debug obj for one layer at once
                     const l3js = layer.threejsLayer;
                     helper.layers.set(l3js);

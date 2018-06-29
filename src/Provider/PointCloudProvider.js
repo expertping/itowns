@@ -142,6 +142,22 @@ function addPickingAttribute(points) {
     return points;
 }
 
+export function getObjectToUpdateForAttachedLayers(meta) {
+    if (meta.obj) {
+        const p = meta.parent;
+        if (p && p.obj) {
+            return {
+                element: meta.obj,
+                parent: p.obj,
+            };
+        } else {
+            return {
+                element: meta.obj,
+            };
+        }
+    }
+}
+
 export default {
     preprocessDataLayer(layer) {
         if (!layer.file) {
@@ -176,21 +192,7 @@ export default {
         layer.postUpdate = PointCloudProcessing.postUpdate;
 
         // override the default method, since updated objects are metadata in this case
-        layer.getObjectToUpdateForAttachedLayers = (meta) => {
-            if (meta.obj) {
-                const p = meta.parent;
-                if (p && p.obj) {
-                    return {
-                        element: meta.obj,
-                        parent: p.obj,
-                    };
-                } else {
-                    return {
-                        element: meta.obj,
-                    };
-                }
-            }
-        };
+        layer.getObjectToUpdateForAttachedLayers = getObjectToUpdateForAttachedLayers;
 
         // this probably needs to be moved to somewhere else
         layer.pickObjectsAt = (view, mouse, radius) => Picking.pickPointsAt(view, mouse, radius, layer);
