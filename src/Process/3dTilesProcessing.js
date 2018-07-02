@@ -220,16 +220,14 @@ export function pre3dTilesUpdate(context, layer) {
     return [layer.root];
 }
 
-const cameraLocalPosition = new THREE.Vector3();
-const worldPosition = new THREE.Vector3();
 const boundingVolumeBox = new THREE.Box3();
 const boundingVolumeSphere = new THREE.Sphere();
 export function computeNodeSSE(camera, node) {
     node.distance = 0;
     if (node.boundingVolume.region) {
-        worldPosition.setFromMatrixPosition(node.boundingVolume.region.matrixWorld);
-        cameraLocalPosition.copy(camera.camera3D.position).sub(worldPosition);
-        node.distance = node.boundingVolume.region.box3D.distanceToPoint(cameraLocalPosition);
+        boundingVolumeBox.copy(node.boundingVolume.region.box3D);
+        boundingVolumeBox.applyMatrix4(node.boundingVolume.region.matrixWorld);
+        node.distance = boundingVolumeBox.distanceToPoint(camera.camera3D.position);
     } else if (node.boundingVolume.box) {
         // boundingVolume.box is affected by matrixWorld
         boundingVolumeBox.copy(node.boundingVolume.box);

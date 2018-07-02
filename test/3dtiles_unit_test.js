@@ -1,4 +1,4 @@
-/* global describe, it, xit */
+/* global describe, it */
 import proj4 from 'proj4';
 import assert from 'assert';
 import { Matrix4, Object3D } from 'three';
@@ -61,7 +61,7 @@ describe('Distance computation using boundingVolume.region', function () {
     camera.camera3D.position.copy(new Coordinates('EPSG:4326', 0, 0, 10000).as('EPSG:4978').xyz());
     camera.camera3D.updateMatrixWorld(true);
 
-    xit('should compute distance correctly', function () {
+    it('should compute distance correctly', function () {
         const tileset = tilesetWithRegion();
         const tileIndex = new $3dTilesIndex(tileset, '');
         const tile = new Object3D();
@@ -72,7 +72,7 @@ describe('Distance computation using boundingVolume.region', function () {
         assert.equal(tile.distance, camera.position().as('EPSG:4326').altitude());
     });
 
-    xit('should not be affected by transform', function () {
+    it('should not be affected by transform', function () {
         const m = new Matrix4().makeTranslation(0, 0, 10).multiply(
             new Matrix4().makeScale(0.01, 0.01, 0.01));
         const tileset = tilesetWithRegion(m);
